@@ -99,3 +99,5 @@ class User(AbstractBaseUser, PermissionsMixin):
         if self.is_superuser:
             self.role = "admin"
         super().save(*args, **kwargs)
+
+
