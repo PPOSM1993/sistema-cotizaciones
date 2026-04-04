@@ -6,11 +6,13 @@ from apps.clientes.views import ClienteViewSet
 from apps.productos.views import ProductoViewSet, MarcaViewSet
 from apps.cotizaciones.views import CotizacionViewSet
 
+
 router = DefaultRouter()
 router.register(r'clientes', ClienteViewSet)
 router.register(r'productos', ProductoViewSet)
 router.register(r'cotizaciones', CotizacionViewSet)
 router.register(r'marcas', MarcaViewSet)
+
 
 
 urlpatterns = [
