@@ -5,7 +5,7 @@ import { cookies } from "next/headers"
 const API_URL = process.env.NEXT_PUBLIC_API_URL!
 
 export async function loginAction(payload: {
-  username: string
+  email: string
   password: string
 }) {
   const res = await fetch(`${API_URL}/api/authentication/login/`, {
