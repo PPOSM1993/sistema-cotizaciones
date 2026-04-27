@@ -1,9 +1,6 @@
-"use client";
-
+"use client"
 import Image from "next/image"
 
-import { MoveLeftIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import LoginCard from "./components/LoginCard"
 
 export default function Login() {

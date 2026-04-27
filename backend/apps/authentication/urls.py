@@ -7,7 +7,7 @@ router.register(r'admin/users', AdminUserViewSet)
 
 urlpatterns = [
     path('auth/register/', RegisterView.as_view()),
-    path('auth/login/', LoginView.as_view()),
+    path('login/', LoginView.as_view()),
     path('auth/me/', ProfileView.as_view()),
     path('auth/update/', UpdateProfileView.as_view()),
     path('auth/change-password/', ChangePasswordView.as_view()),
