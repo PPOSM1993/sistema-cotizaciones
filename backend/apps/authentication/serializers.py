@@ -35,10 +35,10 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 # LOGIN
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    username_field = 'email'  # 🔥 CLAVE
+    username_field = 'email'
 
     def validate(self, attrs):
-        identifier = attrs.get("username")  # puedes dejarlo así
+        identifier = attrs.get("email")
         password = attrs.get("password")
 
         user = None
