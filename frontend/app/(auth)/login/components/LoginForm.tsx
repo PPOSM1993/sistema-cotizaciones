@@ -52,20 +52,22 @@ export default function LoginForm() {
     }
 
     const onSubmit = async (data: LoginSchema) => {
-        try {
-            setIsLoading(true)
+        setIsLoading(true)
+        setErrorMessage(null)
 
-            await loginAction(data)
+        const res = await loginAction(data)
 
-            toast.success("Bienvenido 👋")
-            router.push("/dashboard")
-
-        } catch (err: any) {
-            toast.error(err.message)
-        } finally {
+        if (!res.success) {
+            setErrorMessage(res.message)
+            toast.error(res.message)
             setIsLoading(false)
+            return
         }
+
+        toast.success("Bienvenido 👋")
+        router.push("/dashboard")
     }
+
     return (
 
         <>
