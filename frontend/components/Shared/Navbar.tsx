@@ -62,7 +62,7 @@ export function Navbar({ onMenuClick }: Props) {
 
           {/* Perfil de usuario */}
           <Button variant="ghost" className="p-0 rounded-full">
-            <Avatar className="h-8 w-8">
+            <Avatar className="h-8 w-8 cursor-pointer">
               {/* Luego solo cambias src */}
               <AvatarImage src="" alt="User profile" />
               <AvatarFallback>
