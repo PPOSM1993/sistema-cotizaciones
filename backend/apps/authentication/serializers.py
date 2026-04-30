@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
 
@@ -34,43 +35,50 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 # LOGIN
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    username_field = 'email'
+class CustomTokenObtainPairSerializer(serializers.Serializer):
+
+    email = serializers.CharField()
+    password = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
         identifier = attrs.get("email")
         password = attrs.get("password")
 
-        user = None
-        for field in ['email', 'username', 'rut']:
-            user = User.objects.filter(**{field: identifier}).first()
-            if user:
-                break
+        user = (
+            User.objects.filter(email=identifier).first() or
+            User.objects.filter(username=identifier).first() or
+            User.objects.filter(rut=identifier).first()
+        )
 
         if not user:
-            raise serializers.ValidationError("Credenciales incorrectas")
+            raise serializers.ValidationError({
+                "detail": "Credenciales incorrectas"
+            })
 
-        # 🔥 CORREGIDO
-        auth_user = authenticate(email=user.email, password=password)
+        # 🔥 autenticar correctamente
+        auth_user = authenticate(
+            email=user.email,
+            password=password
+        )
 
         if not auth_user:
-            raise serializers.ValidationError("Credenciales incorrectas")
+            raise serializers.ValidationError({
+                "detail": "Credenciales incorrectas"
+            })
 
-        # 🔥 ahora usamos email
-        data = super().validate({
-            "email": auth_user.email,
-            "password": password
-        })
+        # 🔥 generar tokens manualmente
+        refresh = RefreshToken.for_user(auth_user)
 
-        data['user'] = {
-            "id": auth_user.id,
-            "email": auth_user.email,
-            "username": auth_user.username,
-            "role": auth_user.role,
+        return {
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+            "user": {
+                "id": auth_user.id,
+                "email": auth_user.email,
+                "username": auth_user.username,
+                "role": auth_user.role,
+            }
         }
-
-        return data
-
 # USER
 class UserSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()

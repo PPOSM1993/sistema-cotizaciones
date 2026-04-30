@@ -7,13 +7,16 @@ type LoginPayload = {
 
 export async function login(payload: LoginPayload) {
   const response = await fetch(
-    `${API_URL}/api/authentication/login/`,
+    `${API_URL}/api/token/`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        username: payload.email, // 🔥 FIX
+        password: payload.password,
+      }),
     }
   )
 
@@ -29,7 +32,6 @@ export async function login(payload: LoginPayload) {
   if (!response.ok) {
     throw new Error(
       data?.detail ||
-      data?.non_field_errors?.[0] ||
       "Usuario o contraseña incorrectos"
     )
   }

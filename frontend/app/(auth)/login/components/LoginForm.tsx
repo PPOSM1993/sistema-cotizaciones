@@ -65,7 +65,10 @@ export default function LoginForm() {
         }
 
         toast.success("Bienvenido 👋")
-        router.push("/dashboard")
+
+        setTimeout(() => {
+            router.push("/dashboard")
+        }, 100)
     }
 
     return (
