@@ -170,7 +170,24 @@ CORS_ALLOW_ALL_ORIGINS = True  # para desarrollo
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'API Sistema de Cotizaciones',
-    'DESCRIPTION': 'Documentación de la API del sistema',
+    'DESCRIPTION': 'Documentación de la API',
     'VERSION': '1.0.0',
+
     'SERVE_INCLUDE_SCHEMA': False,
+
+    'SECURITY': [
+        {
+            'BearerAuth': []
+        }
+    ],
+
+    'COMPONENTS': {
+        'securitySchemes': {
+            'BearerAuth': {
+                'type': 'http',
+                'scheme': 'bearer',
+                'bearerFormat': 'JWT',
+            }
+        }
+    },
 }
