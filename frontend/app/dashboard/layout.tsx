@@ -1,5 +1,5 @@
 import { getCurrentUser } from "@/lib/auth"
-import DashboardShell from "./DashboardShell"
+import DashboardShell from "./components/DashboardShell"
 
 export default async function DashboardLayout({
   children,
