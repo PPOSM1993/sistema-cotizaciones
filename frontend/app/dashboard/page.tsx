@@ -1,10 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
+import DashboardClient from "./components/DashboardClient";
 
 export default function DashboardPage() {
     return (
         <>
-            <h1>Dashboard</h1>
+            <DashboardClient />
         </>
     )
 }
