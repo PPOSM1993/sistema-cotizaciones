@@ -1,3 +1,5 @@
+import ClientesClient from "./components/ClientesClient";
+
 export default function ClientesPage() {
     return (
         <>
@@ -6,6 +8,7 @@ export default function ClientesPage() {
                 <p className="text-muted-foreground">
                     Gestión de clientes del sistema
                 </p>
+                <ClientesClient/>
             </div>
         </>
     )
