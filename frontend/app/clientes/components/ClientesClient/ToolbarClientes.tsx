@@ -17,7 +17,7 @@ export default function ToolbarClientes({
 
       <Input
         placeholder="Buscar cliente..."
-        className="max-w-sm rounded-none"
+        className="pl-8 bg-muted/50 rounded-none border-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none"
       />
 
       <Button

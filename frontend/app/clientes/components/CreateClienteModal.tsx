@@ -23,14 +23,15 @@ export default function CreateClienteModal({
       open={open}
       onOpenChange={onOpenChange}
     >
-      <DialogContent className="max-w-4xl rounded-none">
+      <DialogContent
+        className="!max-w-7xl h-[90vh] overflow-y-auto rounded-none p-8 md:max-w-5xl"
+      >
 
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold text-gray-900">
             Nuevo Cliente
           </DialogTitle>
         </DialogHeader>
-
         <CreateClienteForm />
 
       </DialogContent>
