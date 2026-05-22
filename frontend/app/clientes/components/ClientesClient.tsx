@@ -1,16 +1,29 @@
-"use client";
+"use client"
 
-import ClienteTable from "./ClientesClient/ClienteTable";
-import ToolbarClientes from "./ClientesClient/ToolbarClientes";
+import { useState } from "react"
 
+import CreateClienteModal from "./CreateClienteModal"
+import ToolbarClientes from "./ClientesClient/ToolbarClientes"
+import ClienteTable from "./ClientesClient/ClienteTable"
 
 export default function ClientesClient() {
-    return(
-        <div className="space-y-6">
 
-            <ToolbarClientes/>
+  const [open, setOpen] = useState(false)
 
-            <ClienteTable/>
-        </div>
-    )
+  return (
+    <div className="space-y-6">
+
+      <ToolbarClientes
+        onCreate={() => setOpen(true)}
+      />
+
+      <ClienteTable />
+
+      <CreateClienteModal
+        open={open}
+        onOpenChange={setOpen}
+      />
+
+    </div>
+  )
 }
