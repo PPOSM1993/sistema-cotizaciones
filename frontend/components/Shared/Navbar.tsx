@@ -39,11 +39,11 @@ export function Navbar({ onMenuClick }: Props) {
             <Menu className="h-5 w-5" />
           </Button>
 
-          <div className="relative w-[280px]">
+          <div className="relative w-[280px] lg:w-[400px] rounded-none">
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Buscar..."
-              className="pl-8 bg-muted/50"
+              className="pl-8 bg-muted/50 rounded-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none"
             />
           </div>
         </div>

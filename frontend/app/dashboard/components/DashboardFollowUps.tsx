@@ -4,7 +4,7 @@ export default function DashboardFollowUps() {
     return (
         <>
             <div className="rounded-none border bg-white p-6 shadow-sm">
-                <h2 className="text-lg font-semibold mb-4">
+                <h2 className="mb-4 text-xl font-bold uppercase">
                     Seguimientos Pendientes
                 </h2>
 
