@@ -18,3 +18,20 @@ export async function getClientes(): Promise<Cliente[]> {
     },
   ]
 }
+
+export async function createCliente(data: any, token: string | null) {
+  const response = await fetch("http://localhost:8000/api/clientes/clientes/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  })
+
+  if (!response.ok) {
+    throw new Error("Error al crear cliente")
+  }
+
+  return response.json()
+}
