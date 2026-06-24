@@ -24,11 +24,29 @@ class CityViewSet(viewsets.ModelViewSet):
     serializer_class = CitySerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        queryset = City.objects.all()
+        region_id = self.request.query_params.get("region")
+
+        if region_id:
+            queryset = queryset.filter(region_id=region_id)
+
+        return queryset
+
 
 class CommuneViewSet(viewsets.ModelViewSet):
     queryset = Commune.objects.all()
     serializer_class = CommuneSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = Commune.objects.all()
+        city_id = self.request.query_params.get("city")
+
+        if city_id:
+            queryset = queryset.filter(city_id=city_id)
+
+        return queryset
 
 
 class ClienteViewSet(viewsets.ModelViewSet):
