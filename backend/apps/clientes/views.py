@@ -2,13 +2,13 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from .models import (
-    Region, City, Commune,
+    Region, Province, City, Commune,
     Cliente, ContactoCliente,
     ClienteFinanza, ClienteCuenta
 )
 
 from .serializers import (
-    RegionSerializer, CitySerializer, CommuneSerializer,
+    RegionSerializer, CitySerializer, CommuneSerializer, ProvinceSerializer,
     ClienteSerializer, ContactoClienteSerializer,
     ClienteFinanzaSerializer, ClienteCuentaSerializer
 )
@@ -19,6 +19,20 @@ class RegionViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
+class ProvinceViewSet(viewsets.ModelViewSet):
+    queryset = Province.objects.all()
+    serializer_class = ProvinceSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = Province.objects.all()
+        region_id = self.request.query_params.get("region")
+
+        if region_id:
+            queryset = queryset.filter(region_id=region_id)
+
+        return queryset
+
 class CityViewSet(viewsets.ModelViewSet):
     queryset = City.objects.all()
     serializer_class = CitySerializer
@@ -26,10 +40,10 @@ class CityViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = City.objects.all()
-        region_id = self.request.query_params.get("region")
+        provice_id = self.request.query_params.get("province")
 
-        if region_id:
-            queryset = queryset.filter(region_id=region_id)
+        if provice_id:
+            queryset = queryset.filter(province_id=provice_id)
 
         return queryset
 

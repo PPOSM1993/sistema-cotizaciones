@@ -23,12 +23,19 @@ class Region(models.Model):
         return self.nombre
 
 
-class City(models.Model):
+class Province(models.Model):
     nombre = models.CharField(max_length=100)
-    region = models.ForeignKey(Region, on_delete=models.PROTECT, related_name='cities')
-
+    region = models.ForeignKey(Region, on_delete=models.PROTECT, related_name='provinces')
+    
     def __str__(self):
         return f"{self.nombre} ({self.region.nombre})"
+
+class City(models.Model):
+    nombre = models.CharField(max_length=100)
+    province = models.ForeignKey(Province, on_delete=models.PROTECT, related_name='cities')
+
+    def __str__(self):
+        return f"{self.nombre} ({self.province.nombre})"
 
 
 class Commune(models.Model):
@@ -59,6 +66,8 @@ class Cliente(models.Model):
     numero = models.CharField(max_length=20, blank=True, null=True)
 
     region = models.ForeignKey(Region, on_delete=models.PROTECT, related_name='clientes')
+    provincia = models.ForeignKey(Province, on_delete=models.PROTECT, related_name='clientes')
+    ciudad = models.ForeignKey(City, on_delete=models.PROTECT, related_name='clientes')
     comuna = models.ForeignKey(Commune, on_delete=models.PROTECT, related_name='clientes')
 
     vendedor = models.ForeignKey(
