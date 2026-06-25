@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "app/clientes/services/clientes.server.ts"  ],
+, "app/clientes/services/clientes.server.ts", "../respaldo2/regiones.ts"  ],
   "exclude": ["node_modules"]
 }

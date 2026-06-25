@@ -1,36 +1,26 @@
-import { Cliente } from "../types/cliente"
+import { ClienteFormData } from "../types/cliente"
 
-export async function getClientes(): Promise<Cliente[]> {
-  return [
-    {
-      id: 1,
-      rut: "11111111-1",
-      nombre: "Forestal Sur",
-      estado: "cliente",
-      vendedor: "Pedro",
-    },
-    {
-      id: 2,
-      rut: "22222222-2",
-      nombre: "Agrícola Temuco",
-      estado: "prospecto",
-      vendedor: "Juan",
-    },
-  ]
-}
+const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export async function createCliente(data: any, token: string | null) {
-  const response = await fetch("http://localhost:8000/api/clientes/clientes/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(data),
-  })
+export async function createCliente(
+  token: string,
+  data: ClienteFormData
+) {
+  const response = await fetch(
+    `${API_URL}/api/clientes/clientes/`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    }
+  )
 
   if (!response.ok) {
-    throw new Error("Error al crear cliente")
+    const error = await response.json()
+    throw error
   }
 
   return response.json()

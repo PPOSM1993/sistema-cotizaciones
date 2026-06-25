@@ -1,6 +1,6 @@
 from rest_framework.routers import DefaultRouter
 from .views import (
-    RegionViewSet, CityViewSet, CommuneViewSet,
+    RegionViewSet, CityViewSet, CommuneViewSet, ProvinceViewSet,
     ClienteViewSet, ContactoClienteViewSet,
     ClienteFinanzaViewSet, ClienteCuentaViewSet
 )
@@ -8,6 +8,7 @@ from .views import (
 router = DefaultRouter()
 
 router.register(r'regiones', RegionViewSet)
+router.register(r'provincias', ProvinceViewSet)
 router.register(r'ciudades', CityViewSet)
 router.register(r'comunas', CommuneViewSet)
 router.register(r'clientes', ClienteViewSet)
