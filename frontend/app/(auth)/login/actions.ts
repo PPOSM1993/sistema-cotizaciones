@@ -38,5 +38,5 @@ export async function loginAction(payload: {
     sameSite: "lax",
   })
 
-  redirect("/clientes")
+  redirect("/dashboard")
 }
