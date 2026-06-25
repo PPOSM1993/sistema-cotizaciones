@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select"
 
 import { ClienteFormData } from "../types/cliente"
+import { getProvincias } from "../services/provincias"
 
 export default function CreateClienteForm() {
   const form = useForm<ClienteFormData>({
@@ -33,6 +34,8 @@ export default function CreateClienteForm() {
   })
 
   const [regiones, setRegiones] = useState<any[]>([])
+  const [provincias, setProvincias] = useState<any[]>([])
+  const [loadingProvincias, setLoadingProvincias] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -61,6 +64,26 @@ export default function CreateClienteForm() {
     cargarRegiones()
   }, [])
 
+  const handleRegionChange = async (regionId: number) => {
+    form.setValue("region", regionId)
+
+    setProvincias([])
+    form.setValue("provincia", 0)
+
+    try {
+      setLoadingProvincias(true)
+
+      const data = await getProvincias(regionId)
+
+      setProvincias(data)
+    } catch (error) {
+      console.error("Error provincias:", error)
+    } finally {
+      setLoadingProvincias(false)
+    }
+  }
+
+
   const onSubmit = (data: ClienteFormData) => {
     console.log("FORM:", data)
   }
@@ -78,8 +101,7 @@ export default function CreateClienteForm() {
               <FormLabel>Región</FormLabel>
 
               <Select
-                onValueChange={(value) => field.onChange(Number(value))}
-                value={field.value ? String(field.value) : ""}
+                onValueChange={(value) => handleRegionChange(Number(value))}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -98,6 +120,52 @@ export default function CreateClienteForm() {
                       {region.nombre}
                     </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* PROVINCIAS */}
+
+        <FormField
+          control={form.control}
+          name="provincia"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Provincia</FormLabel>
+
+              <Select
+                onValueChange={(value) => {
+                  const parsed = Number(value)
+                  field.onChange(parsed || undefined)
+                }}
+                value={field.value ? String(field.value) : ""}
+                disabled={!form.watch("region") || loadingProvincias}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccione una provincia" />
+                  </SelectTrigger>
+                </FormControl>
+
+                <SelectContent>
+                  {loadingProvincias && (
+                    <SelectItem value="loading" disabled>
+                      Cargando...
+                    </SelectItem>
+                  )}
+
+                  {!loadingProvincias &&
+                    provincias.map((provincia) => (
+                      <SelectItem
+                        key={provincia.id}
+                        value={String(provincia.id)}
+                      >
+                        {provincia.nombre}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
 
