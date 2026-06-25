@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import (
     Region,
+    Province,
     City,
     Commune,
     Cliente,
@@ -15,18 +16,20 @@ class RegionSerializer(serializers.ModelSerializer):
         model = Region
         fields = "__all__"
 
+class ProvinceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Province
+        fields = "__all__"
 
 class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
         fields = "__all__"
 
-
 class CommuneSerializer(serializers.ModelSerializer):
     class Meta:
         model = Commune
         fields = "__all__"
-
 
 class ContactoClienteSerializer(serializers.ModelSerializer):
 

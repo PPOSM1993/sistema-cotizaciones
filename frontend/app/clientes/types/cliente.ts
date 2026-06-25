@@ -1,7 +1,29 @@
-export type Cliente = {
-  id: number
+export type EstadoCliente =
+  | "prospecto"
+  | "cliente"
+  | "inactivo"
+
+export interface ClienteFormData {
   rut: string
   nombre: string
-  estado: "prospecto" | "cliente" | "inactivo"
-  vendedor: string
+
+  fantasia?: string
+  giro?: string
+
+  email?: string
+  telefono?: string
+
+  direccion?: string
+  numero?: string
+
+  region: number
+  provincia: number
+  ciudad: number
+  comuna: number
+
+  descuento: number
+
+  estado: EstadoCliente
+
+  activo: boolean
 }

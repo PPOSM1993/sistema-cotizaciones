@@ -17,9 +17,6 @@ export async function loginAction(payload: {
 
   const data = await res.json()
 
-  console.log("STATUS:", res.status)
-  console.log("DATA:", data)
-
   if (!res.ok) {
     return {
       success: false,
@@ -27,20 +24,19 @@ export async function loginAction(payload: {
     }
   }
 
-  const cookieStore = await cookies()
+  const cookieStore = cookies()
 
-  cookieStore.set("access_token", data.access, {
+  ;(await cookieStore).set("access_token", data.access, {
     httpOnly: true,
     path: "/",
     sameSite: "lax",
   })
 
-  cookieStore.set("refresh_token", data.refresh, {
+  ;(await cookieStore).set("refresh_token", data.refresh, {
     httpOnly: true,
     path: "/",
     sameSite: "lax",
   })
 
-  // 🔥 NO TRY/CATCH
-  redirect("/dashboard")
+  redirect("/clientes")
 }

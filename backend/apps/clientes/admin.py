@@ -3,6 +3,7 @@ from .models import *
 
 # Register your models here.
 admin.site.register(Region)
+admin.site.register(Province)
 admin.site.register(City)
 admin.site.register(Commune)
 admin.site.register(Cliente)
