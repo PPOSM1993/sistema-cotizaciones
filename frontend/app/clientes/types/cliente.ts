@@ -16,10 +16,10 @@ export interface ClienteFormData {
   direccion?: string
   numero?: string
 
-  region: number
-  provincia: number
-  ciudad: number
-  comuna: number
+  region: number | null
+  provincia: number | null
+  ciudad: number | null
+  comuna: number | null
 
   descuento: number
 

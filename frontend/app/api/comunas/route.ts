@@ -5,9 +5,9 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL!
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
 
-  const province = searchParams.get("province")
+  const city = searchParams.get("city")
 
-  if (!province) {
+  if (!city) {
     return Response.json([], { status: 200 })
   }
 
@@ -18,7 +18,7 @@ export async function GET(req: Request) {
   }
 
   const res = await fetch(
-    `${API_URL}/api/clientes/ciudades/?province=${province}`,
+    `${API_URL}/api/clientes/comunas/?city=${city}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
