@@ -12,6 +12,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 
+import { Plus } from "lucide-react"
+
 import {
   Select,
   SelectContent,
@@ -24,6 +26,8 @@ import { ClienteFormData } from "../types/cliente"
 import { getProvincias } from "../services/provincias"
 import { getCiudades } from "../services/ciudades"
 import { getComunas } from "../services/comunas"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 
 
 export default function CreateClienteForm() {
@@ -63,7 +67,11 @@ export default function CreateClienteForm() {
           ? data
           : data.data ?? data.results ?? []
 
-        setRegiones(regionesArray)
+        const regionesOrdenadas = [...regionesArray].sort(
+          (a, b) => a.id - b.id
+        )
+
+        setRegiones(regionesOrdenadas)
 
       } catch (error) {
         console.error("Error cargando regiones:", error)
@@ -142,180 +150,463 @@ export default function CreateClienteForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-2">
+        {/* DATOS GENERALES */}
+        <div className="space-y-5">
+          <h3 className="text-lg font-semibold border-b pb-2">
+            Datos Generales
+          </h3>
 
-        {/* REGIONES */}
-        <FormField
-          control={form.control}
-          name="region"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Región</FormLabel>
+          <div className="grid gap-5 md:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="rut"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>RUT</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none h-10"
+                      placeholder="12.345.678-9"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <Select
-                onValueChange={(value) => handleRegionChange(Number(value))}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccione una región" />
-                  </SelectTrigger>
-                </FormControl>
+            <FormField
+              control={form.control}
+              name="nombre"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Razón Social</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none h-10"
+                      placeholder="Razón Social"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                <SelectContent>
-                  {loading && <SelectItem value="loading">Cargando...</SelectItem>}
+            <FormField
+              control={form.control}
+              name="fantasia"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nombre Fantasía</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none h-10"
+                      placeholder="Nombre Fantasía"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                  {regiones.map((region) => (
-                    <SelectItem
-                      key={region.id}
-                      value={String(region.id)}
-                    >
-                      {region.nombre}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <FormField
+              control={form.control}
+              name="giro"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Giro</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none h-10"
+                      placeholder="Giro"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* PROVINCIAS */}
 
-        <FormField
-          control={form.control}
-          name="provincia"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Provincia</FormLabel>
+          </div>
+        </div>
 
-              <Select
-                onValueChange={(value) => {
-                  const parsed = Number(value)
+        {/* CONTACTO */}
+        <div className="space-y-5">
+          <h3 className="text-lg font-semibold border-b pb-2">
+            Contacto
+          </h3>
 
-                  field.onChange(parsed)
-                  handleProvinciaChange(parsed)
-                }}
-                value={field.value ? String(field.value) : ""}
-                disabled={!form.watch("region") || loadingProvincias}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccione una provincia" />
-                  </SelectTrigger>
-                </FormControl>
+          <div className="grid gap-5 md:grid-cols-2">
 
-                <SelectContent>
-                  {loadingProvincias && (
-                    <SelectItem value="loading" disabled>
-                      Cargando...
-                    </SelectItem>
-                  )}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none h-10"
+                      placeholder="correo@empresa.cl"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                  {!loadingProvincias &&
-                    provincias.map((provincia) => (
-                      <SelectItem
-                        key={provincia.id}
-                        value={String(provincia.id)}
-                      >
-                        {provincia.nombre}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
+            <FormField
+              control={form.control}
+              name="telefono"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Teléfono</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none h-10"
+                      placeholder="+56912345678"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          </div>
+        </div>
+        {/* DIRECCIÓN */}
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold border-b pb-2">
+            Ubicación
+          </h3>
 
-        {/* CIUDADES */}
-        <FormField
-          control={form.control}
-          name="ciudad"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Ciudad</FormLabel>
+          <div className="grid gap-5 md:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="direccion"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Dirección</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none"
+                      placeholder="Dirección"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <Select
-                value={field.value ? String(field.value) : ""}
-                onValueChange={(value) => {
-                  const parsed = Number(value)
+            <FormField
+              control={form.control}
+              name="numero"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Número</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none h-10"
+                      placeholder="Número"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                  field.onChange(parsed)
-                  handleCiudadChange(parsed) // ✅ CORRECTO
-                }}
-                disabled={!form.watch("provincia") || loadingCiudades}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccione una ciudad" />
-                  </SelectTrigger>
-                </FormControl>
+            {/* REGIONES */}
+            <FormField
+              control={form.control}
+              name="region"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Región</FormLabel>
 
-                <SelectContent>
-                  {loadingCiudades && (
-                    <SelectItem value="loading" disabled>
-                      Cargando...
-                    </SelectItem>
-                  )}
+                  <Select
+                    value={field.value ? String(field.value) : ""}
+                    onValueChange={(value) => {
+                      const parsed = Number(value)
 
-                  {ciudades.map((ciudad) => (
-                    <SelectItem key={ciudad.id} value={String(ciudad.id)}>
-                      {ciudad.nombre}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                      field.onChange(parsed)
+                      handleRegionChange(parsed)
+                    }}
+                  >
+                    <FormControl className="w-full">
+                      <SelectTrigger className="w-full h-10 rounded-none border focus:ring-0 focus:ring-offset-0 focus-visible:ring-0">
+                        <SelectValue placeholder="Seleccione una región" />
+                      </SelectTrigger>
+                    </FormControl>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                    <SelectContent className="rounded-none">
+                      {loading && (
+                        <SelectItem value="loading" disabled>
+                          Cargando...
+                        </SelectItem>
+                      )}
 
-        {/* COMUNAS */}
-        <FormField
-          control={form.control}
-          name="comuna"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Comuna</FormLabel>
+                      {!loading &&
+                        regiones.map((region) => (
+                          <SelectItem
+                            key={region.id}
+                            value={String(region.id)}
+                          >
+                            {region.nombre}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
 
-              <Select
-                value={field.value ? String(field.value) : ""}
-                onValueChange={(value) => {
-                  field.onChange(Number(value))
-                }}
-                disabled={!form.watch("ciudad") || loadingComunas || comunas.length === 0}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccione una comuna" />
-                  </SelectTrigger>
-                </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                <SelectContent>
-                  {loadingComunas && (
-                    <SelectItem value="loading" disabled>
-                      Cargando...
-                    </SelectItem>
-                  )}
+            {/* PROVINCIAS */}
+            <FormField
+              control={form.control}
+              name="provincia"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Provincia</FormLabel>
 
-                  {!loadingComunas &&
-                    comunas.map((comuna) => (
-                      <SelectItem key={comuna.id} value={String(comuna.id)}>
-                        {comuna.nombre}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
+                  <Select
+                    value={field.value ? String(field.value) : ""}
+                    onValueChange={(value) => {
+                      const parsed = Number(value)
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                      field.onChange(parsed)
+                      handleProvinciaChange(parsed)
+                    }}
+                    disabled={!form.watch("region") || loadingProvincias}
+                  >
+                    <FormControl className="w-full">
+                      <SelectTrigger className="w-full h-10 rounded-none border focus:ring-0 focus:ring-offset-0 focus-visible:ring-0">
+                        <SelectValue placeholder="Seleccione una provincia" />
+                      </SelectTrigger>
+                    </FormControl>
 
-        <button type="submit">Guardar</button>
+                    <SelectContent className="rounded-none">
+                      {loadingProvincias && (
+                        <SelectItem value="loading" disabled>
+                          Cargando...
+                        </SelectItem>
+                      )}
 
+                      {!loadingProvincias &&
+                        provincias.map((provincia) => (
+                          <SelectItem
+                            key={provincia.id}
+                            value={String(provincia.id)}
+                          >
+                            {provincia.nombre}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-2">
+            {/* CIUDADES */}
+            <FormField
+              control={form.control}
+              name="ciudad"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Ciudad</FormLabel>
+
+                  <Select
+                    value={field.value ? String(field.value) : ""}
+                    onValueChange={(value) => {
+                      const parsed = Number(value)
+
+                      field.onChange(parsed)
+                      handleCiudadChange(parsed)
+                    }}
+                    disabled={!form.watch("provincia") || loadingCiudades}
+                  >
+                    <FormControl className="w-full">
+                      <SelectTrigger className="w-full h-10 rounded-none border focus:ring-0 focus:ring-offset-0 focus-visible:ring-0">
+                        <SelectValue placeholder="Seleccione una ciudad" />
+                      </SelectTrigger>
+                    </FormControl>
+
+                    <SelectContent className="rounded-none">
+                      {loadingCiudades && (
+                        <SelectItem value="loading" disabled>
+                          Cargando...
+                        </SelectItem>
+                      )}
+
+                      {!loadingCiudades &&
+                        ciudades.map((ciudad) => (
+                          <SelectItem
+                            key={ciudad.id}
+                            value={String(ciudad.id)}
+                          >
+                            {ciudad.nombre}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* COMUNAS */}
+            <FormField
+              control={form.control}
+              name="comuna"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Comuna</FormLabel>
+
+                  <Select
+                    value={field.value ? String(field.value) : ""}
+                    onValueChange={(value) => field.onChange(Number(value))}
+                    disabled={
+                      !form.watch("ciudad") ||
+                      loadingComunas ||
+                      comunas.length === 0
+                    }
+                  >
+                    <FormControl className="w-full">
+                      <SelectTrigger className="w-full h-10 rounded-none border focus:ring-0 focus:ring-offset-0 focus-visible:ring-0">
+                        <SelectValue placeholder="Seleccione una comuna" />
+                      </SelectTrigger>
+                    </FormControl>
+
+                    <SelectContent className="rounded-none">
+                      {loadingComunas && (
+                        <SelectItem value="loading" disabled>
+                          Cargando...
+                        </SelectItem>
+                      )}
+
+                      {!loadingComunas &&
+                        comunas.map((comuna) => (
+                          <SelectItem
+                            key={comuna.id}
+                            value={String(comuna.id)}
+                          >
+                            {comuna.nombre}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+
+
+
+        </div>
+
+
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold border-b pb-2">
+            Información Adicional
+          </h3>
+          <div className="grid gap-5 md:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="vendedor"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Vendedor</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="ID vendedor" {...field} className="rounded-none h-10" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="descuento"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Descuento (%)</FormLabel>
+                  <FormControl className="w-full">
+                    <Input type="number" min={0} max={100} {...field} className="rounded-none h-10" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div>
+            <FormField
+              control={form.control}
+              name="estado"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Estado</FormLabel>
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full h-10 rounded-none border focus:ring-0 focus:ring-offset-0 focus-visible:ring-0">
+                        <SelectValue placeholder="Estado cliente" />
+                      </SelectTrigger>
+                    </FormControl>
+
+                    <SelectContent>
+                      <SelectItem value="prospecto">Prospecto</SelectItem>
+                      <SelectItem value="cliente">Cliente</SelectItem>
+                      <SelectItem value="inactivo">Inactivo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+
+
+
+        {/* BOTONES */}
+        <div className="flex justify-end gap-3 pt-6 border-t">
+
+          <Button
+            type="submit"
+            className="
+              rounded-none
+              bg-green-600
+              hover:bg-green-700
+              text-white
+              cursor-pointer
+              hover:text-white
+              h-10
+            "
+          >
+            <Plus className="h-6 w-6 text-white" />
+            Guardar Cliente
+          </Button>
+        </div>
       </form>
     </Form>
   )
