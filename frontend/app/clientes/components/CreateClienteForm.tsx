@@ -22,6 +22,9 @@ import {
 
 import { ClienteFormData } from "../types/cliente"
 import { getProvincias } from "../services/provincias"
+import { getCiudades } from "../services/ciudades"
+import { getComunas } from "../services/comunas"
+
 
 export default function CreateClienteForm() {
   const form = useForm<ClienteFormData>({
@@ -34,8 +37,16 @@ export default function CreateClienteForm() {
   })
 
   const [regiones, setRegiones] = useState<any[]>([])
+
   const [provincias, setProvincias] = useState<any[]>([])
   const [loadingProvincias, setLoadingProvincias] = useState(false)
+
+  const [ciudades, setCiudades] = useState<any[]>([])
+  const [loadingCiudades, setLoadingCiudades] = useState(false)
+
+  const [comunas, setComunas] = useState<any[]>([])
+  const [loadingComunas, setLoadingComunas] = useState(false)
+
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -83,6 +94,47 @@ export default function CreateClienteForm() {
     }
   }
 
+  const handleProvinciaChange = async (provinciaId: number) => {
+    form.setValue("provincia", provinciaId)
+
+    setCiudades([])
+    form.setValue("ciudad", 0)
+
+    try {
+      setLoadingCiudades(true)
+
+      const data = await getCiudades(provinciaId)
+
+      console.log("Ciudades:", data)
+
+      setCiudades(data)
+    } catch (error) {
+      console.error("Error ciudades:", error)
+    } finally {
+      setLoadingCiudades(false)
+    }
+  }
+
+  const handleCiudadChange = async (ciudadId: number) => {
+    form.setValue("ciudad", ciudadId)
+
+    setComunas([])
+    form.setValue("comuna", 0)
+
+    try {
+      setLoadingComunas(true)
+
+      const data = await getComunas(ciudadId)
+
+      console.log("COMUNAS:", data)
+
+      setComunas(data)
+    } catch (error) {
+      console.error("Error comunas:", error)
+    } finally {
+      setLoadingComunas(false)
+    }
+  }
 
   const onSubmit = (data: ClienteFormData) => {
     console.log("FORM:", data)
@@ -139,7 +191,9 @@ export default function CreateClienteForm() {
               <Select
                 onValueChange={(value) => {
                   const parsed = Number(value)
-                  field.onChange(parsed || undefined)
+
+                  field.onChange(parsed)
+                  handleProvinciaChange(parsed)
                 }}
                 value={field.value ? String(field.value) : ""}
                 disabled={!form.watch("region") || loadingProvincias}
@@ -164,6 +218,92 @@ export default function CreateClienteForm() {
                         value={String(provincia.id)}
                       >
                         {provincia.nombre}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* CIUDADES */}
+        <FormField
+          control={form.control}
+          name="ciudad"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Ciudad</FormLabel>
+
+              <Select
+                value={field.value ? String(field.value) : ""}
+                onValueChange={(value) => {
+                  const parsed = Number(value)
+
+                  field.onChange(parsed)
+                  handleCiudadChange(parsed) // ✅ CORRECTO
+                }}
+                disabled={!form.watch("provincia") || loadingCiudades}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccione una ciudad" />
+                  </SelectTrigger>
+                </FormControl>
+
+                <SelectContent>
+                  {loadingCiudades && (
+                    <SelectItem value="loading" disabled>
+                      Cargando...
+                    </SelectItem>
+                  )}
+
+                  {ciudades.map((ciudad) => (
+                    <SelectItem key={ciudad.id} value={String(ciudad.id)}>
+                      {ciudad.nombre}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* COMUNAS */}
+        <FormField
+          control={form.control}
+          name="comuna"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Comuna</FormLabel>
+
+              <Select
+                value={field.value ? String(field.value) : ""}
+                onValueChange={(value) => {
+                  field.onChange(Number(value))
+                }}
+                disabled={!form.watch("ciudad") || loadingComunas || comunas.length === 0}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccione una comuna" />
+                  </SelectTrigger>
+                </FormControl>
+
+                <SelectContent>
+                  {loadingComunas && (
+                    <SelectItem value="loading" disabled>
+                      Cargando...
+                    </SelectItem>
+                  )}
+
+                  {!loadingComunas &&
+                    comunas.map((comuna) => (
+                      <SelectItem key={comuna.id} value={String(comuna.id)}>
+                        {comuna.nombre}
                       </SelectItem>
                     ))}
                 </SelectContent>

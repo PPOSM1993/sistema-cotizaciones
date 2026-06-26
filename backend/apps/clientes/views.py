@@ -40,10 +40,11 @@ class CityViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = City.objects.all()
-        provice_id = self.request.query_params.get("province")
 
-        if provice_id:
-            queryset = queryset.filter(province_id=provice_id)
+        province_id = self.request.query_params.get("province")
+
+        if province_id:
+            queryset = queryset.filter(province_id=province_id)
 
         return queryset
 
