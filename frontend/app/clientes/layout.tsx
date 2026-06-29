@@ -1,6 +1,6 @@
 import { getCurrentUser } from "@/lib/auth"
 import ClientesShell from "./ClientesShell"
-
+import { Toaster } from "@/components/ui/sonner"
 export default async function DashboardLayout({
   children,
 }: {
@@ -11,6 +11,8 @@ export default async function DashboardLayout({
   return (
     <ClientesShell user={user}>
       {children}
+      <Toaster />
+
     </ClientesShell>
   )
 }

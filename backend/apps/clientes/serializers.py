@@ -73,20 +73,39 @@ class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
         fields = "__all__"
+        read_only_fields = (
+            "id",
+            "vendedor",
+            "created_at",
+            "updated_at",
+        )
 
     def validate_rut(self, value):
         return value.lower()
 
     def validate(self, data):
 
-        # Validar coherencia región/comuna
         region = data.get("region")
+        provincia = data.get("provincia")
+        ciudad = data.get("ciudad")
         comuna = data.get("comuna")
 
-        if comuna and region:
-            if comuna.city.region != region:
+        if provincia and region:
+            if provincia.region != region:
                 raise serializers.ValidationError(
-                    "La comuna no pertenece a la región seleccionada."
+                    "La provincia no pertenece a la región seleccionada."
+                )
+
+        if ciudad and provincia:
+            if ciudad.province != provincia:
+                raise serializers.ValidationError(
+                    "La ciudad no pertenece a la provincia seleccionada."
+                )
+
+        if comuna and ciudad:
+            if comuna.city != ciudad:
+                raise serializers.ValidationError(
+                    "La comuna no pertenece a la ciudad seleccionada."
                 )
 
         return data

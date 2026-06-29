@@ -3,6 +3,9 @@
 import { useForm } from "react-hook-form"
 import { useEffect, useState } from "react"
 
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+
 import {
   Form,
   FormControl,
@@ -22,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+import { createCliente } from "../services/clientes.server"
 import { ClienteFormData } from "../types/cliente"
 import { getProvincias } from "../services/provincias"
 import { getCiudades } from "../services/ciudades"
@@ -31,12 +35,24 @@ import { Button } from "@/components/ui/button"
 
 
 export default function CreateClienteForm() {
+  const router = useRouter()
   const form = useForm<ClienteFormData>({
     defaultValues: {
+      rut: "",
+      nombre: "",
+      fantasia: "",
+      giro: "",
+      email: "",
+      telefono: "",
+      direccion: "",
+      numero: "",
       region: 0,
       provincia: 0,
       ciudad: 0,
       comuna: 0,
+      descuento: 0,
+      estado: "prospecto",
+      activo: true,
     } as any,
   })
 
@@ -144,8 +160,51 @@ export default function CreateClienteForm() {
     }
   }
 
-  const onSubmit = (data: ClienteFormData) => {
-    console.log("FORM:", data)
+  const onSubmit = async (data: ClienteFormData) => {
+    try {
+      console.log("Enviando:", data)
+
+      await createCliente(data)
+
+      toast.success("Cliente registrado correctamente", {
+        description: "Redirigiendo al listado de clientes...",
+      })
+
+      // limpiar formulario
+      form.reset()
+      setProvincias([])
+      setCiudades([])
+      setComunas([])
+
+      // cerrar modal si estás dentro de uno (opcional)
+      // setOpen(false)
+
+      // redirigir + refresh
+      setTimeout(() => {
+        router.push("/clientes")
+        router.refresh() // 👈 importante en Next App Router
+      }, 1200)
+
+    } catch (error: any) {
+      console.error(error)
+
+      let mensaje = "Error al crear cliente"
+
+      if (typeof error === "object") {
+        mensaje = Object.entries(error)
+          .map(([campo, errores]: any) => {
+            if (Array.isArray(errores)) {
+              return `${campo}: ${errores.join(", ")}`
+            }
+            return `${campo}: ${errores}`
+          })
+          .join("\n")
+      }
+
+      toast.error("Error", {
+        description: mensaje,
+      })
+    }
   }
 
   return (
@@ -166,7 +225,7 @@ export default function CreateClienteForm() {
                   <FormLabel>RUT</FormLabel>
                   <FormControl>
                     <Input
-                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none h-10"
+                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none"
                       placeholder="12.345.678-9"
                       {...field}
                     />
@@ -184,7 +243,7 @@ export default function CreateClienteForm() {
                   <FormLabel>Razón Social</FormLabel>
                   <FormControl>
                     <Input
-                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none h-10"
+                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none"
                       placeholder="Razón Social"
                       {...field}
                     />
@@ -202,7 +261,7 @@ export default function CreateClienteForm() {
                   <FormLabel>Nombre Fantasía</FormLabel>
                   <FormControl>
                     <Input
-                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none h-10"
+                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none"
                       placeholder="Nombre Fantasía"
                       {...field}
                     />
@@ -220,7 +279,7 @@ export default function CreateClienteForm() {
                   <FormLabel>Giro</FormLabel>
                   <FormControl>
                     <Input
-                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none h-10"
+                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none"
                       placeholder="Giro"
                       {...field}
                     />
@@ -251,7 +310,7 @@ export default function CreateClienteForm() {
                   <FormControl>
                     <Input
                       type="email"
-                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none h-10"
+                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none"
                       placeholder="correo@empresa.cl"
                       {...field}
                     />
@@ -269,7 +328,7 @@ export default function CreateClienteForm() {
                   <FormLabel>Teléfono</FormLabel>
                   <FormControl>
                     <Input
-                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none h-10"
+                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none"
                       placeholder="+56912345678"
                       {...field}
                     />
@@ -314,7 +373,7 @@ export default function CreateClienteForm() {
                   <FormLabel>Número</FormLabel>
                   <FormControl>
                     <Input
-                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none h-10"
+                      className="rounded-none border-sm focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none"
                       placeholder="Número"
                       {...field}
                     />
@@ -342,7 +401,7 @@ export default function CreateClienteForm() {
                     }}
                   >
                     <FormControl className="w-full">
-                      <SelectTrigger className="w-full h-10 rounded-none border focus:ring-0 focus:ring-offset-0 focus-visible:ring-0">
+                      <SelectTrigger className="w-full rounded-none border focus:ring-0 focus:ring-offset-0 focus-visible:ring-0">
                         <SelectValue placeholder="Seleccione una región" />
                       </SelectTrigger>
                     </FormControl>
@@ -390,7 +449,7 @@ export default function CreateClienteForm() {
                     disabled={!form.watch("region") || loadingProvincias}
                   >
                     <FormControl className="w-full">
-                      <SelectTrigger className="w-full h-10 rounded-none border focus:ring-0 focus:ring-offset-0 focus-visible:ring-0">
+                      <SelectTrigger className="w-full rounded-none border focus:ring-0 focus:ring-offset-0 focus-visible:ring-0">
                         <SelectValue placeholder="Seleccione una provincia" />
                       </SelectTrigger>
                     </FormControl>
@@ -440,7 +499,7 @@ export default function CreateClienteForm() {
                     disabled={!form.watch("provincia") || loadingCiudades}
                   >
                     <FormControl className="w-full">
-                      <SelectTrigger className="w-full h-10 rounded-none border focus:ring-0 focus:ring-offset-0 focus-visible:ring-0">
+                      <SelectTrigger className="w-full rounded-none border focus:ring-0 focus:ring-offset-0 focus-visible:ring-0">
                         <SelectValue placeholder="Seleccione una ciudad" />
                       </SelectTrigger>
                     </FormControl>
@@ -487,7 +546,7 @@ export default function CreateClienteForm() {
                     }
                   >
                     <FormControl className="w-full">
-                      <SelectTrigger className="w-full h-10 rounded-none border focus:ring-0 focus:ring-offset-0 focus-visible:ring-0">
+                      <SelectTrigger className="w-full rounded-none border focus:ring-0 focus:ring-offset-0 focus-visible:ring-0">
                         <SelectValue placeholder="Seleccione una comuna" />
                       </SelectTrigger>
                     </FormControl>
@@ -524,11 +583,13 @@ export default function CreateClienteForm() {
 
 
         <div className="space-y-2">
+
           <h3 className="text-lg font-semibold border-b pb-2">
             Información Adicional
           </h3>
           <div className="grid gap-5 md:grid-cols-2">
-            <FormField
+            {/**
+ *             <FormField
               control={form.control}
               name="vendedor"
               render={({ field }) => (
@@ -541,6 +602,9 @@ export default function CreateClienteForm() {
                 </FormItem>
               )}
             />
+ * 
+ * 
+ */}
             <FormField
               control={form.control}
               name="descuento"
@@ -548,14 +612,20 @@ export default function CreateClienteForm() {
                 <FormItem>
                   <FormLabel>Descuento (%)</FormLabel>
                   <FormControl className="w-full">
-                    <Input type="number" min={0} max={100} {...field} className="rounded-none h-10" />
+                    <Input
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={field.value}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      className="rounded-none h-10"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          </div>
-          <div>
+
             <FormField
               control={form.control}
               name="estado"

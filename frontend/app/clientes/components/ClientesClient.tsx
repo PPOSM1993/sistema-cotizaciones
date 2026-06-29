@@ -8,8 +8,8 @@ import ClienteTable from "./ClientesClient/ClienteTable"
 
 export default function ClientesClient() {
 
-  const [open, setOpen] = useState(false)
 
+  const [open, setOpen] = useState(false)
   return (
     <div className="space-y-6">
 
