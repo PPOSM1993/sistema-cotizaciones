@@ -1,27 +1,20 @@
+
 import { ClienteFormData } from "../types/cliente"
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
+export async function createCliente(data: ClienteFormData) {
+  const response = await fetch("/api/clientes", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
 
-export async function createCliente(
-  token: string,
-  data: ClienteFormData
-) {
-  const response = await fetch(
-    `${API_URL}/api/clientes/clientes/`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
-    }
-  )
+  const result = await response.json()
 
   if (!response.ok) {
-    const error = await response.json()
-    throw error
+    throw result
   }
 
-  return response.json()
+  return result
 }
