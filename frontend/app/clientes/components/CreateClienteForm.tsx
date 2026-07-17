@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form"
 import { useEffect, useState } from "react"
 
-import { useRouter } from "next/navigation"
+//import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 import {
@@ -34,8 +34,14 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
 
-export default function CreateClienteForm() {
-  const router = useRouter()
+type Props = {
+  onSuccess?: () => void
+}
+
+export default function CreateClienteForm({
+  onSuccess,
+}: Props) {
+  //const router = useRouter()
   const form = useForm<ClienteFormData>({
     defaultValues: {
       rut: "",
@@ -167,23 +173,17 @@ export default function CreateClienteForm() {
       await createCliente(data)
 
       toast.success("Cliente registrado correctamente", {
-        description: "Redirigiendo al listado de clientes...",
+        description: "El cliente ha sido creado exitosamente.",
       })
 
-      // limpiar formulario
+      // Limpiar formulario
       form.reset()
       setProvincias([])
       setCiudades([])
       setComunas([])
 
-      // cerrar modal si estás dentro de uno (opcional)
-      // setOpen(false)
-
-      // redirigir + refresh
-      setTimeout(() => {
-        router.push("/clientes")
-        router.refresh() // 👈 importante en Next App Router
-      }, 1200)
+      // Cerrar el modal
+      onSuccess?.()
 
     } catch (error: any) {
       console.error(error)

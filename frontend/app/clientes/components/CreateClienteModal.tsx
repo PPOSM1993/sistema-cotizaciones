@@ -32,7 +32,9 @@ export default function CreateClienteModal({
             Nuevo Cliente
           </DialogTitle>
         </DialogHeader>
-        <CreateClienteForm />
+        <CreateClienteForm
+          onSuccess={() => onOpenChange(false)}
+        />
 
       </DialogContent>
     </Dialog>
